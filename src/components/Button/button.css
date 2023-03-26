@@ -1,0 +1,12 @@
+.default {
+    background-color: "transparant";
+    height: 40px;
+    width: 150px;
+    color: "white";
+
+    
+}
+
+.default:hover {
+    background-color: "red";
+}
