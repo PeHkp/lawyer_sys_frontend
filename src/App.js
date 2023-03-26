@@ -1,9 +1,8 @@
 import "./App.css";
+import ConfigRoutes from './configuration/ConfigRoutes';
 
 function App() {
-  return (
-    "Hello!"
-  );
+  return <ConfigRoutes/>
 }
 
 export default App;
