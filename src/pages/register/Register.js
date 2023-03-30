@@ -1,4 +1,4 @@
-import React, { useReducer } from "react";
+import React, { useReducer, useState } from "react";
 import { Grid, IconButton, InputAdornment, TextField, Tooltip, Typography } from "@mui/material";
 import "./Register.css";
 import DefaultButton from "../../components/Button/DefaultButton";
@@ -10,6 +10,9 @@ import EmailIcon from '@mui/icons-material/Email';
 import RegisterService from "./RegisterService";
 import PhoneIcon from '@mui/icons-material/Phone';
 import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
+import {storage} from '../../configuration/firebase'
+import {ref, uploadBytes,getDownloadURL, listAll} from 'firebase/storage'
+import {v4} from 'uuid'
 
 const initialState = {
     username: '',
@@ -48,6 +51,16 @@ function reducer(state, action) {
 
 export default function Register() {
     const [state, dispatch] = useReducer(reducer, initialState);
+    const [imageUpload, setImageUpload] = useState(null)
+    const [url, setUrl] = useState('')
+
+    const uploadImage = async () => {
+        if (imageUpload == null) return;
+        const imageRef = ref(storage, `images/${imageUpload.name + v4()}`)
+        await uploadBytes(imageRef, imageUpload)
+        const url = await getDownloadURL(imageRef)
+        setUrl(url)
+    }
 
     const {
         username,
@@ -85,12 +98,14 @@ export default function Register() {
                 .replace(/(\d{5})(\d)/, '$1-$2')
                 .replace(/(-\d{4})\d+?$/, '$1')
         }
+        
 
         dispatch({ type: 'update', data: { [name]: value } })
     }
 
     const handleRegister = () => {
-        console.log("registrar")
+        console.log(username)
+        uploadImage()
     }
 
     const handleShowPassword = () => {
@@ -155,6 +170,9 @@ export default function Register() {
                                 <ArrowCircleLeftIcon fontSize="large" />
                             </IconButton>
                         </Tooltip>
+                        <input type='file' onChange={(event) => {
+                            setImageUpload(event.target.files[0])
+                        }}/>
                     </Grid>
                     <Grid item xs={10} md={6}>
                         <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
