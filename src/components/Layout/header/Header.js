@@ -92,13 +92,14 @@ export default function Header(props) {
                 open={open}
                 onClose={handleOpenMenu}
             >
-                <Box sx={{ marginTop: 1 }}>
-                    <Typography variant='h6' textAlign="center">
-                        {"Menu"}
-                    </Typography>
-                    <hr />
-                </Box>
-                <Box sx={{ width: 200 }}>
+
+                <Box sx={{ width: 300 }}>
+                    <Box sx={{ marginTop: 1 }}>
+                        <Typography variant='h6' textAlign="center">
+                            {"Menu"}
+                        </Typography>
+                        <hr />
+                    </Box>
                     <List>
                         {itemMenu.map((item) => {
                             return (

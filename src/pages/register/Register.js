@@ -26,7 +26,8 @@ const initialState = {
     confirmPassword: '',
     showPassword: false,
     showConfirmPassword: false,
-    emailNaoValido: false
+    emailNaoValido: false,
+    errorMsg: ''
 }
 
 function reducer(state, action) {
@@ -62,7 +63,7 @@ export default function Register() {
         password,
         confirmPassword
     } = state
-    const { showPassword, showConfirmPassword, emailNaoValido, ...data } = state
+    const { showPassword, showConfirmPassword, emailNaoValido, errorMsg, ...data } = state
 
     let navigate = useNavigate();
 
@@ -90,7 +91,30 @@ export default function Register() {
     }
 
     const handleRegister = () => {
-        console.log("registrar")
+        let obj = {
+            email: email,
+            nome: username,
+            cnpj: cnpj,
+            senha: password,
+            confirmaSenha: confirmPassword,
+            telefone: phoneNumber,
+            cep: cep,
+            cidade: city,
+            bairro: neighborhood,
+            rua: address,
+            numero: number
+        }
+
+        RegisterService
+            .register(obj)
+            .then((response) => {
+                if (response.status == 200) {
+                    navigate('/home')
+                }
+            }).catch((e) => {
+                console.log(e)
+                dispatch({ type: 'update', data: { errorMsg: e.response.data?.msg } })
+            })
     }
 
     const handleShowPassword = () => {
@@ -149,6 +173,10 @@ export default function Register() {
                     columnSpacing={3}
                     className="card"
                 >
+                    {
+                        errorMsg != '' &&
+                        <Typography style={{ color: 'red' }} variant="h6">{errorMsg}</Typography>
+                    }
                     <Grid item xs={12}>
                         <Tooltip title="Voltar">
                             <IconButton onClick={() => navigate('/login')}>

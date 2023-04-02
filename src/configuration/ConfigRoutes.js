@@ -8,13 +8,15 @@ const ConfigRoutes = () => {
   return (
     <>
       <Routes>
-        <Route path="/*" element={<Navigate to="/login" replace={true} />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-
-        <Route path="/home" element={<Header><Home /></Header>} />
-
       </Routes>
+      <Header>
+        <Routes>
+          <Route path="/home" element={<Home />} />
+          {/* <Route path="/*" element={<Navigate to="/login" replace={true} />} /> */}
+        </Routes>
+      </Header>
     </>
   );
 };
