@@ -5,6 +5,7 @@ import { Grid } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Box } from '@mui/system';
 import EmailIcon from '@mui/icons-material/Email';
+import { useNavigate } from 'react-router-dom';
 
 const initialState = {
     open: false,
@@ -29,25 +30,22 @@ function reducer(state, action) {
 }
 
 export default function Header(props) {
+
+    let navigate = useNavigate();
+
     const [state, dispatch] = useReducer(reducer, initialState);
-    const { open, openInfoUser } = state
+    const { open } = state
 
     const handleOpenMenu = () => {
         dispatch({ type: 'update', data: { open: !open } })
     }
-    const handleOpenInfoUser = () => {
-        dispatch({ type: 'update', data: { openInfoUser: !openInfoUser } })
-    }
-
 
     let itemMenu = [
-        { id: 1, text: 'Menu1' },
-        { id: 2, text: 'Menu2' },
-        { id: 3, text: 'Menu3' },
-        { id: 4, text: 'Menu4' },
-        { id: 5, text: 'Menu5' },
-        { id: 6, text: 'Menu6' },
-        { id: 7, text: 'Menu7' },
+        { id: 1, text: 'Advogado', route: '/lawyer' },
+        { id: 2, text: 'Cliente', route: '/customer' },
+        { id: 3, text: 'Estagiário', route: '/trainner' },
+        { id: 4, text: 'Livro', route: '/book' },
+        { id: 5, text: 'Ação', route: '/action' },
     ]
 
     return (
@@ -77,7 +75,7 @@ export default function Header(props) {
                                         Perfil
                                     </Grid>
                                     <Grid>
-                                        <b>Sair</b>
+                                        <b onClick={() => navigate('/login')}>Sair</b>
                                     </Grid>
                                 </Grid>
 
@@ -86,7 +84,7 @@ export default function Header(props) {
                     </Toolbar>
                 </AppBar>
                 {props.children}
-            </Grid>
+            </Grid >
 
             <Drawer
                 open={open}
@@ -103,7 +101,10 @@ export default function Header(props) {
                     <List>
                         {itemMenu.map((item) => {
                             return (
-                                <ListItem key={item.id} disablePadding>
+                                <ListItem key={item.id} disablePadding onClick={() => {
+                                    navigate(item.route)
+                                    handleOpenMenu()
+                                }}>
                                     <ListItemButton>
                                         <ListItemIcon>
                                             <EmailIcon />

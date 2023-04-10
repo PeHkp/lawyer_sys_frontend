@@ -173,17 +173,23 @@ export default function Register() {
                     columnSpacing={3}
                     className="card"
                 >
+                    <Grid container direction="row" item xs={12} alignItems="center">
+                        <Grid item xs={1}>
+                            <Tooltip title="Voltar">
+                                <IconButton onClick={() => navigate('/login')}>
+                                    <ArrowCircleLeftIcon fontSize="large" />
+                                </IconButton>
+                            </Tooltip>
+                        </Grid>
+                        <Grid item xs={10}>
+                            <Typography variant="h6" align="center">{"Cadastrar"}</Typography>
+                        </Grid>
+                    </Grid>
                     {
                         errorMsg != '' &&
                         <Typography style={{ color: 'red' }} variant="h6">{errorMsg}</Typography>
                     }
-                    <Grid item xs={12}>
-                        <Tooltip title="Voltar">
-                            <IconButton onClick={() => navigate('/login')}>
-                                <ArrowCircleLeftIcon fontSize="large" />
-                            </IconButton>
-                        </Tooltip>
-                    </Grid>
+
                     <Grid item xs={10} md={6}>
                         <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
                             <AccountCircle sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
