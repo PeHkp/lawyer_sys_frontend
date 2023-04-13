@@ -10,6 +10,7 @@ import Customer from "../pages/customer/Customer";
 import Trainner from "../pages/trainee/Trainne";
 import Book from "../pages/book/Book";
 import Action from "../pages/action/Action";
+import Loan from "../pages/loan/Loan";
 const ConfigRoutes = () => {
   return (
     <>
@@ -27,6 +28,7 @@ const ConfigRoutes = () => {
           <Route path="/trainner" element={<Trainner />} />
           <Route path="/book" element={<Book />} />
           <Route path="/action" element={<Action />} />
+          <Route path="/loan" element={<Loan />} />
         </Routes>
       </Header>
     </>

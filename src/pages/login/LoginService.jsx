@@ -1,5 +1,5 @@
 import Api from '../../configuration/ServiceApi';
 
-const login = (data) => Api.post(`/check/user`, data);
+const login = (data) => Api.post(`/login`, data, { withCredentials: true });
 
 export default { login }

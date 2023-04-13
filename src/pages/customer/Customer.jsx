@@ -6,13 +6,14 @@ import EmailIcon from '@mui/icons-material/Email';
 import { AccountCircle } from "@mui/icons-material";
 import PhoneIcon from '@mui/icons-material/Phone';
 import RegisterService from "../register/RegisterService";
+import CustomerService from "./CustomerService";
 
 const initialState = {
-    email: '',
+    descricao: '',
     nome: '',
-    telefone: '',
-    cpf: '',
-    idEscritorio: 0,
+    contato: '',
+    documento: '',
+    profissao: '',
     cep: '',
     rua: '',
     numero: '',
@@ -20,14 +21,7 @@ const initialState = {
     cidade: '',
 
     errorMsg: '',
-    customers: [
-        { id: 1, nome: 'Teste', descricao: 'teste teste' },
-        { id: 2, nome: 'Teste2', descricao: 'teste teste' },
-        { id: 3, nome: 'Teste3', descricao: 'teste teste' },
-        { id: 4, nome: 'Teste4', descricao: 'teste teste' },
-        { id: 5, nome: 'Teste5', descricao: 'teste teste' },
-        { id: 6, nome: 'Teste6', descricao: 'teste teste' }
-    ],
+    customers: [],
     criaCliente: false
 }
 
@@ -46,16 +40,17 @@ export default function Customer() {
     const [state, dispatch] = useReducer(reducer, initialState);
 
     const {
-        email,
+        descricao,
         nome,
-        telefone,
-        cpf,
+        contato,
+        documento,
         idEscritorio,
         cep,
         rua,
         numero,
         estado,
-        cidade
+        cidade,
+        profissao
     } = state
     const { errorMsg, customers, criaCliente, ...data } = state
 
@@ -91,6 +86,40 @@ export default function Customer() {
         }
     }
 
+    const handleRegister = () => {
+        let obj = {
+            nome: nome,
+            contato: contato,
+            descricao: descricao,
+            doc: documento,
+            endereco: `${rua} - ${numero}`,
+            profissao: profissao
+        }
+
+        CustomerService
+            .register(obj)
+            .then((response) => {
+                dispatch({type:'update', data:{criaCliente: false}})
+                handleSearch()
+            }).catch((e) => {
+                console.log(e)
+            })
+    }
+
+    const handleSearch = () => {
+        CustomerService
+            .get()
+            .then((response => {
+                dispatch({ type: 'update', data: { customers: response.data.msg } })
+            })).catch((e) => {
+                console.log(e)
+            })
+    }
+
+    useEffect(() => {
+        handleSearch();
+    }, [])
+
     return (
         <>
             {!criaCliente ? (
@@ -103,8 +132,9 @@ export default function Customer() {
                             return (
                                 <Grid item xs={10} key={item.id}>
                                     <CustomListItem
-                                        nome={item.nome}
-                                        descricao={item.descricao}
+                                        // nome={item.Nome}
+                                        // descricao={item.descricao}
+                                        cliente={item}
                                     />
                                 </Grid>
                             )
@@ -117,7 +147,7 @@ export default function Customer() {
             ) :
                 <Grid container xs={12} justifyContent="center">
                     <Grid container direction="row" item xs={10} spacing={2}>
-                        <Grid item xs={12} style={{marginTop: 50, marginBottom: 30}}>
+                        <Grid item xs={12} style={{ marginTop: 50, marginBottom: 30 }}>
                             <Typography variant="h6" textAlign="center">Cadastro de Cliente</Typography>
                         </Grid>
                         <Grid item xs={10} md={6}>
@@ -136,28 +166,14 @@ export default function Customer() {
                         </Grid>
                         <Grid item xs={10} md={6}>
                             <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
-                                <EmailIcon sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
                                 <TextField
-                                    name="email"
-                                    label="E-mail"
+                                    name="documento"
+                                    label="documento"
                                     variant="standard"
-                                    type="email"
+                                    type="documento"
                                     fullWidth
                                     onChange={handleChange}
-                                    value={email}
-                                />
-                            </Box>
-                        </Grid>
-                        <Grid item xs={10} md={6}>
-                            <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
-                                <TextField
-                                    name="cpf"
-                                    label="CPF"
-                                    variant="standard"
-                                    type="cpf"
-                                    fullWidth
-                                    onChange={handleChange}
-                                    value={cpf}
+                                    value={documento}
                                 />
                             </Box>
                         </Grid>
@@ -165,12 +181,36 @@ export default function Customer() {
                             <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
                                 <PhoneIcon sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
                                 <TextField
-                                    name="telefone"
-                                    label="Telefone"
+                                    name="contato"
+                                    label="contato"
                                     variant="standard"
                                     fullWidth
                                     onChange={handleChange}
-                                    value={telefone}
+                                    value={contato}
+                                />
+                            </Box>
+                        </Grid>
+                        <Grid item xs={10} md={6}>
+                            <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+                                <TextField
+                                    name="profissao"
+                                    label="Profissão"
+                                    variant="standard"
+                                    fullWidth
+                                    onChange={handleChange}
+                                    value={profissao}
+                                />
+                            </Box>
+                        </Grid>
+                        <Grid item xs={10} md={6}>
+                            <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+                                <TextField
+                                    name="descricao"
+                                    label="Descricao"
+                                    variant="standard"
+                                    fullWidth
+                                    onChange={handleChange}
+                                    value={descricao}
                                 />
                             </Box>
                         </Grid>
@@ -241,7 +281,7 @@ export default function Customer() {
                                 <DefaultButton description="Cancelar" onClick={() => dispatch({ type: 'update', data: { criaCliente: false } })} />
                             </Grid>
                             <Grid item xs={3} style={{ marginTop: 20 }}>
-                                <DefaultButton description="Salvar" />
+                                <DefaultButton description="Salvar" onClick={handleRegister} />
                             </Grid>
                         </Grid>
                     </Grid>

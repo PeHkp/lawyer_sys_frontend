@@ -12,32 +12,32 @@ export default function CustomListItem(props) {
                     id="panel1a-header"
                 >
                     <Grid item xs={8}>
-                        <Typography>{props.nome}</Typography>
+                        <Typography>{props.cliente.Nome}</Typography>
                     </Grid>
                     <Grid item xs={4}>
-                        <Typography textAlign="right">{props.nome}</Typography>
+                        <Typography textAlign="right">{props.cliente.Nome}</Typography>
                     </Grid>
                 </AccordionSummary>
                 <AccordionDetails>
                     <Grid item xs={12} style={{ height: 200 }}>
                         <Typography>
-                            {props.descricao}
+                            {props.cliente.descricao}
                         </Typography>
                     </Grid>
                     <Grid item xs={12}>
                         <Typography>
-                            {`Trabalho: ${props.descricao}`}
+                            {`Trabalho: ${props.cliente.profissao}`}
                         </Typography>
                     </Grid>
                     <Grid container direction="row" item xs={12}>
                         <Grid item xs={6}>
                             <Typography>
-                                {`Endereço: ${props.descricao}`}
+                                {`Endereço: ${props.cliente.endereco}`}
                             </Typography>
                         </Grid>
                         <Grid item xs={6}>
                             <Typography>
-                                {`Telefone: ${props.descricao}`}
+                                {`Telefone: ${props.cliente.telefone}`}
                             </Typography>
                         </Grid>
                     </Grid>

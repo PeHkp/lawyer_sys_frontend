@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react'
+import React, { useReducer, useEffect } from 'react'
 import { AppBar, Avatar, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Toolbar, Typography, Menu, MenuItem } from '@mui/material';
 import { IconButton } from '@mui/material';
 import { Grid } from '@mui/material';
@@ -46,7 +46,15 @@ export default function Header(props) {
         { id: 3, text: 'Estagiário', route: '/trainner' },
         { id: 4, text: 'Livro', route: '/book' },
         { id: 5, text: 'Ação', route: '/action' },
+        { id: 5, text: 'Emprestimo', route: '/loan' },
     ]
+
+    useEffect(() => {
+        let token = sessionStorage.getItem("token")
+        if (!token) {
+            navigate('/login')
+        }
+    }, [])
 
     return (
         <>

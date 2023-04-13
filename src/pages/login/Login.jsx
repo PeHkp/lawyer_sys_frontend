@@ -54,6 +54,8 @@ function Login() {
       .login(obj)
       .then((response) => {
         if (response.status == 200) {
+          console.log(response)
+          sessionStorage.setItem('token', response.data.success.token)
           navigate('/home')
         }
       }).catch((e) => {
