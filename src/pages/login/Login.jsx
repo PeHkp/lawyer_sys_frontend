@@ -6,11 +6,13 @@ import { useNavigate } from 'react-router-dom';
 import { AccountCircle, Visibility, VisibilityOff } from "@mui/icons-material";
 import LockIcon from '@mui/icons-material/Lock';
 import { Box } from "@mui/system";
+import LoginService from "./LoginService";
 
 const initialState = {
   email: '',
   password: '',
-  visiblityPassword: false
+  visiblityPassword: false,
+  errorMsg: ''
 }
 
 function reducer(state, action) {
@@ -34,7 +36,7 @@ function Login() {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const { email, password } = state
-  const { visiblityPassword, ...data } = state
+  const { visiblityPassword, errorMsg, ...data } = state
 
   let navigate = useNavigate();
 
@@ -43,7 +45,23 @@ function Login() {
   }
 
   const handleLogin = () => {
-    console.log("logar")
+    let obj = {
+      email: email,
+      senha: password
+    }
+
+    LoginService
+      .login(obj)
+      .then((response) => {
+        if (response.status == 200) {
+          console.log(response)
+          sessionStorage.setItem('token', response.data.success.token)
+          navigate('/home')
+        }
+      }).catch((e) => {
+        console.log(e.response)
+        dispatch({ type: 'update', data: { errorMsg: e.response.data.msg } })
+      })
   }
 
   const handleShowPassword = () => {
@@ -64,6 +82,10 @@ function Login() {
           rowSpacing={3}
           className="card"
         >
+          {
+            errorMsg != '' &&
+            <Typography style={{ color: 'red' }} variant="h6">{errorMsg}</Typography>
+          }
           <Grid item xs={10} md={12}>
             <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
               <AccountCircle sx={{ color: 'action.active', mr: 1, my: 0.5 }} />

@@ -1,10 +1,11 @@
-import React, { useReducer } from 'react'
+import React, { useReducer, useEffect } from 'react'
 import { AppBar, Avatar, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Toolbar, Typography, Menu, MenuItem } from '@mui/material';
 import { IconButton } from '@mui/material';
 import { Grid } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Box } from '@mui/system';
 import EmailIcon from '@mui/icons-material/Email';
+import { useNavigate } from 'react-router-dom';
 
 const initialState = {
     open: false,
@@ -29,26 +30,31 @@ function reducer(state, action) {
 }
 
 export default function Header(props) {
+
+    let navigate = useNavigate();
+
     const [state, dispatch] = useReducer(reducer, initialState);
-    const { open, openInfoUser } = state
+    const { open } = state
 
     const handleOpenMenu = () => {
         dispatch({ type: 'update', data: { open: !open } })
     }
-    const handleOpenInfoUser = () => {
-        dispatch({ type: 'update', data: { openInfoUser: !openInfoUser } })
-    }
-
 
     let itemMenu = [
-        { id: 1, text: 'Menu1' },
-        { id: 2, text: 'Menu2' },
-        { id: 3, text: 'Menu3' },
-        { id: 4, text: 'Menu4' },
-        { id: 5, text: 'Menu5' },
-        { id: 6, text: 'Menu6' },
-        { id: 7, text: 'Menu7' },
+        { id: 1, text: 'Advogado', route: '/lawyer' },
+        { id: 2, text: 'Cliente', route: '/customer' },
+        { id: 3, text: 'Estagiário', route: '/trainner' },
+        { id: 4, text: 'Livro', route: '/book' },
+        { id: 5, text: 'Ação', route: '/action' },
+        { id: 5, text: 'Emprestimo', route: '/loan' },
     ]
+
+    useEffect(() => {
+        let token = sessionStorage.getItem("token")
+        if (!token) {
+            navigate('/login')
+        }
+    }, [])
 
     return (
         <>
@@ -77,7 +83,7 @@ export default function Header(props) {
                                         Perfil
                                     </Grid>
                                     <Grid>
-                                        <b>Sair</b>
+                                        <b onClick={() => navigate('/login')}>Sair</b>
                                     </Grid>
                                 </Grid>
 
@@ -86,23 +92,27 @@ export default function Header(props) {
                     </Toolbar>
                 </AppBar>
                 {props.children}
-            </Grid>
+            </Grid >
 
             <Drawer
                 open={open}
                 onClose={handleOpenMenu}
             >
-                <Box sx={{ marginTop: 1 }}>
-                    <Typography variant='h6' textAlign="center">
-                        {"Menu"}
-                    </Typography>
-                    <hr />
-                </Box>
-                <Box sx={{ width: 200 }}>
+
+                <Box sx={{ width: 300 }}>
+                    <Box sx={{ marginTop: 1 }}>
+                        <Typography variant='h6' textAlign="center">
+                            {"Menu"}
+                        </Typography>
+                        <hr />
+                    </Box>
                     <List>
                         {itemMenu.map((item) => {
                             return (
-                                <ListItem key={item.id} disablePadding>
+                                <ListItem key={item.id} disablePadding onClick={() => {
+                                    navigate(item.route)
+                                    handleOpenMenu()
+                                }}>
                                     <ListItemButton>
                                         <ListItemIcon>
                                             <EmailIcon />

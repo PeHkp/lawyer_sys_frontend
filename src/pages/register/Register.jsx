@@ -29,7 +29,8 @@ const initialState = {
     confirmPassword: '',
     showPassword: false,
     showConfirmPassword: false,
-    emailNaoValido: false
+    emailNaoValido: false,
+    errorMsg: ''
 }
 
 function reducer(state, action) {
@@ -75,7 +76,7 @@ export default function Register() {
         password,
         confirmPassword
     } = state
-    const { showPassword, showConfirmPassword, emailNaoValido, ...data } = state
+    const { showPassword, showConfirmPassword, emailNaoValido, errorMsg, ...data } = state
 
     let navigate = useNavigate();
 
@@ -98,14 +99,38 @@ export default function Register() {
                 .replace(/(\d{5})(\d)/, '$1-$2')
                 .replace(/(-\d{4})\d+?$/, '$1')
         }
-        
+
 
         dispatch({ type: 'update', data: { [name]: value } })
     }
 
     const handleRegister = () => {
-        console.log(username)
         uploadImage()
+
+        let obj = {
+            email: email,
+            nome: username,
+            cnpj: cnpj,
+            senha: password,
+            confirmaSenha: confirmPassword,
+            telefone: phoneNumber,
+            cep: cep,
+            cidade: city,
+            bairro: neighborhood,
+            rua: address,
+            numero: number
+        }
+
+        RegisterService
+            .register(obj)
+            .then((response) => {
+                if (response.status == 200) {
+                    navigate('/home')
+                }
+            }).catch((e) => {
+                dispatch({ type: 'update', data: { errorMsg: e.response.data?.msg } })
+            })
+
     }
 
     const handleShowPassword = () => {
@@ -164,16 +189,26 @@ export default function Register() {
                     columnSpacing={3}
                     className="card"
                 >
-                    <Grid item xs={12}>
-                        <Tooltip title="Voltar">
-                            <IconButton onClick={() => navigate('/login')}>
-                                <ArrowCircleLeftIcon fontSize="large" />
-                            </IconButton>
-                        </Tooltip>
-                        <input type='file' onChange={(event) => {
-                            setImageUpload(event.target.files[0])
-                        }}/>
+                    <Grid container direction="row" item xs={12} alignItems="center">
+                        <Grid item xs={1}>
+                            <Tooltip title="Voltar">
+                                <IconButton onClick={() => navigate('/login')}>
+                                    <ArrowCircleLeftIcon fontSize="large" />
+                                </IconButton>
+                            </Tooltip>
+                        </Grid>
+                        <Grid item xs={10}>
+                            <Typography variant="h6" align="center">{"Cadastrar"}</Typography>
+                        </Grid>
                     </Grid>
+                    <input type='file' onChange={(event) => {
+                        setImageUpload(event.target.files[0])
+                    }}/>
+                    {
+                        errorMsg != '' &&
+                        <Typography style={{ color: 'red' }} variant="h6">{errorMsg}</Typography>
+                    }
+
                     <Grid item xs={10} md={6}>
                         <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
                             <AccountCircle sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
