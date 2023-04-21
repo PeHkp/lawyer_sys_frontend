@@ -60,7 +60,7 @@ function Login() {
         }
       }).catch((e) => {
         console.log(e.response)
-        dispatch({ type: 'update', data: { errorMsg: e.response.data.msg } })
+        dispatch({ type: 'update', data: { errorMsg: e.response.data.error.message } })
       })
   }
 

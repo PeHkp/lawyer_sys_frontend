@@ -1,4 +1,4 @@
-import { Box, Grid, TextField, Typography } from "@mui/material";
+import { Alert, Box, Button, Grid, Snackbar, TextField, Typography } from "@mui/material";
 import React, { useEffect, useReducer } from "react";
 import CustomListItem from "../../components/ListItem/CustomListItem";
 import DefaultButton from "../../components/Button/DefaultButton";
@@ -55,6 +55,18 @@ export default function Customer() {
     const { errorMsg, customers, criaCliente, ...data } = state
 
     const handleChange = ({ target: { value, name } }) => {
+        if (name === 'cep') {
+            value = value.replace(/\D/g, '')
+                .replace(/(\d{5})(\d)/, '$1-$2')
+                .replace(/(-\d{3})\d+?$/, '$1')
+        }
+        else if (name === 'contato') {
+            value = value.replace(/\D/g, '')
+                .replace(/(\d{2})(\d)/, '($1) $2')
+                .replace(/(\d{5})(\d)/, '$1-$2')
+                .replace(/(-\d{4})\d+?$/, '$1')
+        }
+
         dispatch({ type: 'update', data: { [name]: value } })
     }
 
@@ -87,23 +99,30 @@ export default function Customer() {
     }
 
     const handleRegister = () => {
-        let obj = {
-            nome: nome,
-            contato: contato,
-            descricao: descricao,
-            doc: documento,
-            endereco: `${rua} - ${numero}`,
-            profissao: profissao
-        }
+        if (nome !== '' && documento !== '' && cep !== '' && contato !== '') {
 
-        CustomerService
-            .register(obj)
-            .then((response) => {
-                dispatch({type:'update', data:{criaCliente: false}})
-                handleSearch()
-            }).catch((e) => {
-                console.log(e)
-            })
+            let obj = {
+                nome: nome,
+                contato: contato,
+                descricao: descricao,
+                doc: documento,
+                endereco: `${rua} - ${numero}`,
+                profissao: profissao
+            }
+
+            CustomerService
+                .register(obj)
+                .then((response) => {
+                    dispatch({ type: 'update', data: { criaCliente: false } })
+                    dispatch({ type: 'clear' })
+                    handleSearch()
+                }).catch((e) => {
+                    console.log(e)
+                })
+
+        } else {
+            dispatch({ type: 'update', data: { errorMsg: 'Verifique os Campos!' } })
+        }
     }
 
     const handleSearch = () => {
@@ -147,6 +166,20 @@ export default function Customer() {
             ) :
                 <Grid container xs={12} justifyContent="center">
                     <Grid container direction="row" item xs={10} spacing={2}>
+                        <Snackbar
+                            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                            open={errorMsg !== ''}
+                            action={
+                                <Button color="inherit" size="small" onClick={() => dispatch({ type: 'update', data: { errorMsg: '' } })}>
+                                    X
+                                </Button>
+                            }
+                            severity="error"
+                        >
+                            <Alert onClose={() => dispatch({ type: 'update', data: { errorMsg: '' } })} severity="error" sx={{ width: '100%' }}>
+                                {errorMsg}
+                            </Alert>
+                        </Snackbar>
                         <Grid item xs={12} style={{ marginTop: 50, marginBottom: 30 }}>
                             <Typography variant="h6" textAlign="center">Cadastro de Cliente</Typography>
                         </Grid>
@@ -161,6 +194,7 @@ export default function Customer() {
                                     fullWidth
                                     onChange={handleChange}
                                     value={nome}
+                                    error={errorMsg !== '' && nome === ''}
                                 />
                             </Box>
                         </Grid>
@@ -174,6 +208,7 @@ export default function Customer() {
                                     fullWidth
                                     onChange={handleChange}
                                     value={documento}
+                                    error={errorMsg !== '' && documento === ''}
                                 />
                             </Box>
                         </Grid>
@@ -187,6 +222,7 @@ export default function Customer() {
                                     fullWidth
                                     onChange={handleChange}
                                     value={contato}
+                                    error={errorMsg !== '' && contato === ''}
                                 />
                             </Box>
                         </Grid>
@@ -232,6 +268,7 @@ export default function Customer() {
                                     onChange={handleChange}
                                     onKeyDown={handleSearchCep}
                                     value={cep}
+                                    error={errorMsg !== '' && cep === ''}
                                 />
                             </Grid>
                             <Grid item xs={5} md={6}>
@@ -278,7 +315,10 @@ export default function Customer() {
                         </Grid>
                         <Grid container direction="row" justifyContent="space-between">
                             <Grid item xs={3} style={{ marginTop: 20 }}>
-                                <DefaultButton description="Cancelar" onClick={() => dispatch({ type: 'update', data: { criaCliente: false } })} />
+                                <DefaultButton description="Cancelar" onClick={() => {
+                                    dispatch({ type: 'clear' })
+                                    handleSearch()
+                                }} />
                             </Grid>
                             <Grid item xs={3} style={{ marginTop: 20 }}>
                                 <DefaultButton description="Salvar" onClick={handleRegister} />

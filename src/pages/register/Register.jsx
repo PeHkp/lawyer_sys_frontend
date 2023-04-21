@@ -108,9 +108,7 @@ export default function Register() {
         RegisterService
             .register(obj)
             .then((response) => {
-                if (response.status == 200) {
-                    navigate('/home')
-                }
+                navigate('/login')
             }).catch((e) => {
                 console.log(e)
                 dispatch({ type: 'update', data: { errorMsg: e.response.data?.msg } })
