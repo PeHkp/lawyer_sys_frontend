@@ -53,7 +53,7 @@ function reducer(state, action) {
 
 export default function Register() {
     const [state, dispatch] = useReducer(reducer, initialState);
-    const [url, setUrl] = useState('')
+    
 
     const [image, setImage] = useState();
   const [preview, setPreview] = useState()
@@ -72,13 +72,16 @@ export default function Register() {
     }
   }, [image]);
 
-    const uploadImage = async () => {
+  async function updateImage ()  {
         if (image == null) return;
         const imageRef = ref(storage, `images/${image.name + v4()}`)
         await uploadBytes(imageRef, image)
         const url = await getDownloadURL(imageRef)
-        setUrl(url)
-    }
+        return url
+    
+  }
+
+    
 
     const {
         username,
@@ -121,8 +124,8 @@ export default function Register() {
         dispatch({ type: 'update', data: { [name]: value } })
     }
 
-    const handleRegister = () => {
-        uploadImage()
+    const handleRegister = async () =>  {
+        var url = await updateImage()
 
         let obj = {
             email: email,
