@@ -16,3 +16,22 @@
     color: #286fb0;
     cursor: pointer;
 }
+
+
+#preview,
+#button-preview {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+#button-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  border: none;
+  background: #5e636e;
+  color: #FFFFFF;
+}
