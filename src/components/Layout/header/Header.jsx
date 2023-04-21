@@ -41,12 +41,12 @@ export default function Header(props) {
     }
 
     let itemMenu = [
-        { id: 1, text: 'Advogado', route: '/lawyer' },
+         { id: 1, text: 'Advogado', route: '/lawyer' },
         { id: 2, text: 'Cliente', route: '/customer' },
-        { id: 3, text: 'Estagiário', route: '/trainner' },
-        { id: 4, text: 'Livro', route: '/book' },
+        //{ id: 3, text: 'Estagiário', route: '/trainner' },
+        //{ id: 4, text: 'Livro', route: '/book' },
         { id: 5, text: 'Ação', route: '/action' },
-        { id: 5, text: 'Emprestimo', route: '/loan' },
+        //{ id: 5, text: 'Emprestimo', route: '/loan' },
     ]
 
     useEffect(() => {
