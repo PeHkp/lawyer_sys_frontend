@@ -93,11 +93,7 @@ export default function Action() {
             })).catch((e) => {
                 console.log(e)
             })
-    }
-
-    useEffect(() => {
-        handleSearch();
-
+        
         ActionService
             .getCustomer()
             .then((response) => {
@@ -129,6 +125,10 @@ export default function Action() {
             }).catch((e) => {
                 console.log(e)
             })
+    }
+
+    useEffect(() => {
+        handleSearch();        
     }, [])
 
     const handleChangeAutoComplete = (value, name) => {
