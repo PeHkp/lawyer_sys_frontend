@@ -1,4 +1,4 @@
-import React, { useReducer } from "react";
+import React, { useReducer, useState, useEffect, useRef } from "react";
 import { Grid, IconButton, InputAdornment, TextField, Tooltip, Typography } from "@mui/material";
 import "./Register.css";
 import DefaultButton from "../../components/Button/DefaultButton";
@@ -10,6 +10,10 @@ import EmailIcon from '@mui/icons-material/Email';
 import RegisterService from "./RegisterService";
 import PhoneIcon from '@mui/icons-material/Phone';
 import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
+import {storage} from '../../configuration/firebase'
+import {ref, uploadBytes,getDownloadURL, listAll} from 'firebase/storage'
+import {Person} from "@mui/icons-material"
+import {v4} from 'uuid'
 
 const initialState = {
     username: '',
@@ -50,6 +54,35 @@ function reducer(state, action) {
 export default function Register() {
     const [state, dispatch] = useReducer(reducer, initialState);
 
+
+    const [image, setImage] = useState();
+  const [preview, setPreview] = useState()
+  const fileInputRef = useRef();
+
+
+  useEffect(() => {
+    if (image) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result);
+      };
+      reader.readAsDataURL(image);
+    } else {
+      setPreview(null);
+    }
+  }, [image]);
+
+  async function updateImage ()  {
+        if (image == null) return;
+        const imageRef = ref(storage, `images/${image.name + v4()}`)
+        await uploadBytes(imageRef, image)
+        const url = await getDownloadURL(imageRef)
+        return url
+
+  }
+
+
+
     const {
         username,
         email,
@@ -87,10 +120,13 @@ export default function Register() {
                 .replace(/(-\d{4})\d+?$/, '$1')
         }
 
+
         dispatch({ type: 'update', data: { [name]: value } })
     }
 
-    const handleRegister = () => {
+    const handleRegister = async () =>  {
+        var url = await updateImage()
+
         let obj = {
             email: email,
             nome: username,
@@ -102,17 +138,21 @@ export default function Register() {
             cidade: city,
             bairro: neighborhood,
             rua: address,
-            numero: number
+            numero: number,
+            logo: url
         }
 
         RegisterService
             .register(obj)
             .then((response) => {
-                navigate('/login')
+                if (response.status == 200) {
+                    navigate('/home')
+                }
             }).catch((e) => {
                 console.log(e)
                 dispatch({ type: 'update', data: { errorMsg: e.response.data?.msg } })
             })
+
     }
 
     const handleShowPassword = () => {
@@ -182,7 +222,45 @@ export default function Register() {
                         <Grid item xs={10}>
                             <Typography variant="h6" align="center">{"Cadastrar"}</Typography>
                         </Grid>
+                        {preview ? (
+          <img
+          id="preview"
+            src={preview}
+            style={{ objectFit: "cover" }}
+            onClick={() => {
+              setImage(null);
+            }}
+          />
+        ) : (
+          <button
+          id="button-preview"
+            onClick={(event) => {
+              event.preventDefault();
+              fileInputRef.current.click();
+            }}
+          >
+            <Person/>
+          </button>
+        )}
+
+<input
+          type="file"
+          style={{ display: "none" }}
+          ref={fileInputRef}
+          accept="image/*"
+          onChange={(event) => {
+            const file = event.target.files[0];
+            if (file && file.type.substr(0, 5) === "image") {
+              setImage(file);
+            } else {
+              setImage(null);
+            }
+          }}
+        />
+
+
                     </Grid>
+
                     {
                         errorMsg != '' &&
                         <Typography style={{ color: 'red' }} variant="h6">{errorMsg}</Typography>
@@ -367,6 +445,7 @@ export default function Register() {
                             </Grid>
                         }
                     </Grid>
+
                     <Grid item xs={10} md={12}>
                         <DefaultButton description="Cadastrar" onClick={handleRegister} />
                     </Grid>
