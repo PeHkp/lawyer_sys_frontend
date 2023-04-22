@@ -1,4 +1,4 @@
-import { Box, Grid, TextField, Typography } from "@mui/material";
+import { Alert, Box, Button, Grid, Snackbar, TextField, Typography } from "@mui/material";
 import React, { useEffect, useReducer } from "react";
 import CustomListItem from "../../components/ListItem/CustomListItem";
 import DefaultButton from "../../components/Button/DefaultButton";
@@ -78,6 +78,20 @@ export default function Loan() {
             ) :
                 <Grid container xs={12} justifyContent="center">
                     <Grid container direction="row" item xs={10} spacing={2}>
+                        <Snackbar
+                            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                            open={errorMsg !== ''}
+                            action={
+                                <Button color="inherit" size="small" onClick={() => dispatch({ type: 'update', data: { errorMsg: '' } })}>
+                                    X
+                                </Button>
+                            }
+                            severity="error"
+                        >
+                            <Alert onClose={() => dispatch({ type: 'update', data: { errorMsg: '' } })} severity="error" sx={{ width: '100%' }}>
+                                {errorMsg}
+                            </Alert>
+                        </Snackbar>
                         <Grid item xs={12} style={{ marginTop: 50, marginBottom: 30 }}>
                             <Typography variant="h6" textAlign="center">Cadastro de Emprestimo</Typography>
                         </Grid>

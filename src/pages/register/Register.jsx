@@ -53,7 +53,7 @@ function reducer(state, action) {
 
 export default function Register() {
     const [state, dispatch] = useReducer(reducer, initialState);
-    
+
 
     const [image, setImage] = useState();
   const [preview, setPreview] = useState()
@@ -78,10 +78,10 @@ export default function Register() {
         await uploadBytes(imageRef, image)
         const url = await getDownloadURL(imageRef)
         return url
-    
+
   }
 
-    
+
 
     const {
         username,
@@ -145,7 +145,6 @@ export default function Register() {
         RegisterService
             .register(obj)
             .then((response) => {
-                console.log(response)
                 if (response.status == 200) {
                     navigate('/home')
                 }
@@ -261,7 +260,7 @@ export default function Register() {
 
 
                     </Grid>
-                    
+
                     {
                         errorMsg != '' &&
                         <Typography style={{ color: 'red' }} variant="h6">{errorMsg}</Typography>
@@ -446,32 +445,7 @@ export default function Register() {
                             </Grid>
                         }
                     </Grid>
-                    <div>
-                        
-            
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-                    {/* <label class="picture" for="picture__input" tabIndex="0">
-                         <span class="picture__image"></span>
-                    </label>
-                    <input type='file'name="picture__input" id="picture__input" onChange={(event) => {
-                        setImageUpload(event.target.files[0])
-                    }}/> */}
-                    
-
-                    </div>
                     <Grid item xs={10} md={12}>
                         <DefaultButton description="Cadastrar" onClick={handleRegister} />
                     </Grid>
