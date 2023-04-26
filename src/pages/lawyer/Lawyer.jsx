@@ -20,12 +20,7 @@ const initialState = {
     documento: '',
     errorMsg: '',
     lawyers: [
-        { id: 1, nome: 'Teste', descricao: 'teste teste' },
-        { id: 2, nome: 'Teste2', descricao: 'teste teste' },
-        { id: 3, nome: 'Teste3', descricao: 'teste teste' },
-        { id: 4, nome: 'Teste4', descricao: 'teste teste' },
-        { id: 5, nome: 'Teste5', descricao: 'teste teste' },
-        { id: 6, nome: 'Teste6', descricao: 'teste teste' }
+
     ],
     criaAdvogado: false
 }
