@@ -24,7 +24,8 @@ const initialState = {
         { id: 1, label: 'Em Processo' },
         { id: 2, label: 'Finalizado' },
         { id: 3, label: 'Cancelado' },
-    ]
+    ],
+    custo: ''
 }
 
 function reducer(state, action) {
@@ -50,7 +51,8 @@ export default function Action() {
         customerId,
         customers,
         lawyers,
-        statusList
+        statusList,
+        custo
     } = state
     const { errorMsg, actions, criaAcao, ...data } = state
 
@@ -67,7 +69,8 @@ export default function Action() {
                 descricao: descricao,
                 doc: doc,
                 lawyerId: lawyerId,
-                customerId: customerId
+                customerId: customerId,
+                custo: custo
             }
 
             ActionService
@@ -93,10 +96,6 @@ export default function Action() {
             })).catch((e) => {
                 console.log(e)
             })
-    }
-
-    useEffect(() => {
-        handleSearch();
 
         ActionService
             .getCustomer()
@@ -129,6 +128,10 @@ export default function Action() {
             }).catch((e) => {
                 console.log(e)
             })
+    }
+
+    useEffect(() => {
+        handleSearch();
     }, [])
 
     const handleChangeAutoComplete = (value, name) => {
@@ -156,6 +159,7 @@ export default function Action() {
                                         customers={customers}
                                         lawyers={lawyers}
                                         statusList={statusList}
+                                        custo={custo}
                                     />
                                 </Grid>
                             )
@@ -222,6 +226,18 @@ export default function Action() {
                                     fullWidth
                                     onChange={handleChange}
                                     value={descricao}
+                                />
+                            </Box>
+                        </Grid>
+                        <Grid item xs={10} md={6}>
+                            <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+                                <TextField
+                                    name="custo"
+                                    label="Custo"
+                                    variant="standard"
+                                    fullWidth
+                                    onChange={handleChange}
+                                    value={custo}
                                 />
                             </Box>
                         </Grid>

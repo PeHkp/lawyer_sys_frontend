@@ -59,7 +59,7 @@ function Login() {
           navigate('/home')
         }
       }).catch((e) => {
-        console.log(e.response)
+        console.log(e)
         dispatch({ type: 'update', data: { errorMsg: e.response.data.error.message } })
       })
   }

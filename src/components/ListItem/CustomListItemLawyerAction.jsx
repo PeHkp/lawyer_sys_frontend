@@ -46,6 +46,13 @@ export default function CustomListItemAction(props) {
                             </Typography>
                         </Grid>
                     </Grid>
+                    <Grid container direction="row" item xs={12}>
+                        <Grid item xs={6}>
+                            <Typography>
+                                {`Custom: ${props.custo}`}
+                            </Typography>
+                        </Grid>
+                    </Grid>
                 </AccordionDetails>
             </Accordion>
         </Grid>

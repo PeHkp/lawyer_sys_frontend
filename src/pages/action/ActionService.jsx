@@ -5,11 +5,19 @@ import Api from '../../configuration/ServiceApi';
 
 // const getCustomer = () => Api.get(`get/customer`);
 // const getLawyer = () => Api.get(`/get/lawyer`);
-const register = (data) => Api.post(`/create/lawsuit`, data, { withCredentials: true });
-const get = (data) => Api.get(`/get/lawsuit`, { withCredentials: true });
+const register = (data) => Api.post(`/create/lawsuit`, data, {headers :{
+        authorization: sessionStorage.getItem('token')
+    } });
+const get = (data) => Api.get(`/get/lawsuit`, {headers :{
+        authorization: sessionStorage.getItem('token')
+    } });
 
-const getCustomer = (data) => Api.get(`get/customer`, { withCredentials: true });
-const getLawyer = () => Api.get(`/get/lawyer`, { withCredentials: true });
+const getCustomer = (data) => Api.get(`get/customer`, {headers :{
+        authorization: sessionStorage.getItem('token')
+    } });
+const getLawyer = () => Api.get(`/get/lawyer`, {headers :{
+        authorization: sessionStorage.getItem('token')
+    } });
 
 
 export default { register, get, getCustomer, getLawyer }
