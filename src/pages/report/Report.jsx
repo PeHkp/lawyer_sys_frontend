@@ -7,14 +7,7 @@ const initialState = {
     dataInicio: null,
     dataFim: null,
     errorMsg: '',
-    rows: [
-        { id: 1, nome: 'Teste', descricao: 'teste teste' },
-        { id: 2, nome: 'Teste2', descricao: 'teste teste' },
-        { id: 3, nome: 'Teste3', descricao: 'teste teste' },
-        { id: 4, nome: 'Teste4', descricao: 'teste teste' },
-        { id: 5, nome: 'Teste5', descricao: 'teste teste' },
-        { id: 6, nome: 'Teste6', descricao: 'teste teste' }
-    ],
+    rows: [],
     criaLivro: false,
     tipoRelatorio: 0,
     tipoRelatorioliST: [
@@ -52,16 +45,18 @@ export default function Report() {
     const handleSearch = () => {
         if (tipoRelatorio == 0) {
             ReportService
-                .getLoan()
+                .getLawsuit({ fromDate: dataInicio, toDate: dataFim })
                 .then((response) => {
+                    console.log(response.data)
                     dispatch({ type: 'update', data: { rows: response.data.msg } })
                 }).catch((e) => {
                     console.log(e)
                 })
         } else {
             ReportService
-                .getLoan()
+                .getLoan({ fromDate: dataInicio, toDate: dataFim })
                 .then((response) => {
+                    console.log(response.data)
                     dispatch({ type: 'update', data: { rows: response.data.msg } })
                 }).catch((e) => {
                     console.log(e)
@@ -69,18 +64,25 @@ export default function Report() {
         }
     }
 
+    useEffect(()=>{
+        handleSearch()
+    },[tipoRelatorio])
+
     const exportReport = () => {
         var dados = '';
 
         if (tipoRelatorio == 0) {
-            dados += "ID;NOME;DESCRIÇÃO;\n"
+            let vlrTotal = 0
+            dados += "NOME;DESCRICAO;ADVOGADO;CLIENTE;CUSTO\n"
             rows.map((item) => {
-                dados += `${item.id};${item.nome};${item.descricao};\n`;
+                dados += `${item.nome};${item.descricao};${item.advogado}${item.Cliente}$;{item.custo}\n`;
+                vlrTotal += parseFloat(item.custo)
             })
+            dados += `\n\nVALOR TOTAL;${vlrTotal}`
         } else {
-            dados += "ID;ESTAGIARIO;LIVRO;DATA DEVOLUÇÃO; SITUAÇÃO\n"
+            dados += "ESTAGIARIO;LIVRO;AUTOR;DATA DEVOLUCAO; SITUACAO\n"
             rows.map((item) => {
-                dados += `${item.id};${item.nome};${item.descricao};\n`;
+                dados += `${item.Estagiario};${item.Livro};${item.autor};${item.data_dev};${item.situacao}\n`;
             })
         }
 
@@ -163,89 +165,95 @@ export default function Report() {
                 </Grid>
             </Grid>
 
-            {tipoRelatorio == 0 ?
+            {rows.length > 0 ?
                 <>
-                    <Grid item xs={12} container justifyContent='center' direction='row' style={{ marginTop: 30 }}>
-                        <Grid item xs={8}>
-                            <Typography variant="h6" textAlign='center'>Relátorio de Ação</Typography>
-                        </Grid>
-                        <Grid item xs={8}>
-                            <TableContainer component={Paper}>
-                                <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell align="center">Nome</TableCell>
-                                            <TableCell align="center">Cliente</TableCell>
-                                            <TableCell align="center">Advogado</TableCell>
-                                            <TableCell align="center">Cliente</TableCell>
-                                            <TableCell align="center">Valor</TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {rows.map((row, index) => (
-                                            <TableRow
-                                                key={index}
-                                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                            >
-                                                <TableCell align="center">{row?.nome}</TableCell>
-                                                <TableCell align="center">{row?.descricao}</TableCell>
-                                                <TableCell align="center">{row?.id}</TableCell>
-                                                <TableCell align="center">{row?.carbs}</TableCell>
-                                                <TableCell align="center">{row?.protein}</TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                        </Grid>
-                        <Grid item xs={12} style={{ marginTop: 20 }} container justifyContent='center'>
-                            <Grid item xs={3}>
-                                <DefaultButton description="Exportar" onClick={exportReport} />
+                    {tipoRelatorio == 0 ?
+                        <>
+                            <Grid item xs={12} container justifyContent='center' direction='row' style={{ marginTop: 30 }}>
+                                <Grid item xs={8}>
+                                    <Typography variant="h6" textAlign='center'>Relátorio de Ação</Typography>
+                                </Grid>
+                                <Grid item xs={8}>
+                                    <TableContainer component={Paper}>
+                                        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                                            <TableHead>
+                                                <TableRow>
+                                                    <TableCell align="center">Nome</TableCell>
+                                                    <TableCell align="center">Cliente</TableCell>
+                                                    <TableCell align="center">Advogado</TableCell>
+                                                    <TableCell align="center">Cliente</TableCell>
+                                                    <TableCell align="center">Valor</TableCell>
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                {rows.map((row, index) => (
+                                                    <TableRow
+                                                        key={index}
+                                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                                    >
+                                                        <TableCell align="center">{row?.nome}</TableCell>
+                                                        <TableCell align="center">{row?.descricao}</TableCell>
+                                                        <TableCell align="center">{row?.advogado}</TableCell>
+                                                        <TableCell align="center">{row?.Cliente}</TableCell>
+                                                        <TableCell align="center">{row?.custo}</TableCell>
+                                                    </TableRow>
+                                                ))}
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                </Grid>
+                                <Grid item xs={12} style={{ marginTop: 20 }} container justifyContent='center'>
+                                    <Grid item xs={3}>
+                                        <DefaultButton description="Exportar" onClick={exportReport} />
+                                    </Grid>
+                                </Grid>
                             </Grid>
-                        </Grid>
-                    </Grid>
-                </>
-                :
-                <>
-                    <Grid item xs={12} container justifyContent='center' direction='row' style={{ marginTop: 30 }}>
-                        <Grid item xs={8}>
-                            <Typography variant="h6" textAlign='center'>Relátorio de Emprestimo</Typography>
-                        </Grid>
-                        <Grid item xs={8}>
-                            <TableContainer component={Paper}>
-                                <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell align="center">Estagiario</TableCell>
-                                            <TableCell align="center">Livro</TableCell>
-                                            <TableCell align="center">Data devolução</TableCell>
-                                            <TableCell align="center">Situação</TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {rows.map((row, index) => (
-                                            <TableRow
-                                                key={index}
-                                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                            >
-                                                <TableCell align="center">{row?.estagiario}</TableCell>
-                                                <TableCell align="center">{row?.livro}</TableCell>
-                                                <TableCell align="center">{row?.dataDevolucao}</TableCell>
-                                                <TableCell align="center">{row?.situacao}</TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                        </Grid>
-                        <Grid item xs={12} style={{ marginTop: 20 }} container justifyContent='center'>
-                            <Grid item xs={3}>
-                                <DefaultButton description="Exportar" onClick={exportReport} />
+                        </>
+                        :
+                        <>
+                            <Grid item xs={12} container justifyContent='center' direction='row' style={{ marginTop: 30 }}>
+                                <Grid item xs={8}>
+                                    <Typography variant="h6" textAlign='center'>Relátorio de Emprestimo</Typography>
+                                </Grid>
+                                <Grid item xs={8}>
+                                    <TableContainer component={Paper}>
+                                        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                                            <TableHead>
+                                                <TableRow>
+                                                    <TableCell align="center">Estagiario</TableCell>
+                                                    <TableCell align="center">Livro</TableCell>
+                                                    <TableCell align="center">Data devolução</TableCell>
+                                                    <TableCell align="center">Situação</TableCell>
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                {rows.map((row, index) => (
+                                                    <TableRow
+                                                        key={index}
+                                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                                    >
+                                                        <TableCell align="center">{row?.Estagiario}</TableCell>
+                                                        <TableCell align="center">{row?.Livro}</TableCell>
+                                                        <TableCell align="center">{row?.data_dev}</TableCell>
+                                                        <TableCell align="center">{row?.situacao}</TableCell>
+                                                    </TableRow>
+                                                ))}
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                </Grid>
+                                <Grid item xs={12} style={{ marginTop: 20 }} container justifyContent='center'>
+                                    <Grid item xs={3}>
+                                        <DefaultButton description="Exportar" onClick={exportReport} />
+                                    </Grid>
+                                </Grid>
                             </Grid>
-                        </Grid>
-                    </Grid>
+                        </>
+                    }
+
                 </>
-            }
+
+                : null}
 
         </>
     )

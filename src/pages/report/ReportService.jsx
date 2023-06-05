@@ -2,9 +2,15 @@ import Api from '../../configuration/ServiceApi';
 
 // const get = (data) => Api.get(`/get/lawsuit`);
 
-const getLoan = (data) => Api.get(`/get/loan`, {
+const getLawsuit = (data) => Api.get(`/report/lawsuit`, {
     headers: {
         authorization: sessionStorage.getItem('token')
     }
 });
-export default { getLoan }
+
+const getLoan = (data) => Api.get(`/report/loan`, {
+    headers: {
+        authorization: sessionStorage.getItem('token')
+    }
+});
+export default { getLoan, getLawsuit }

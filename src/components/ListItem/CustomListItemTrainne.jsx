@@ -12,7 +12,7 @@ export default function CustomListItemTrainne(props) {
                     id="panel1a-header"
                 >
                     <Grid item xs={8}>
-                        <Typography>{props.trainne?.NOme}</Typography>
+                        <Typography>{props.trainne?.nome}</Typography>
                     </Grid>
                     <Grid item xs={4}>
                         <Typography textAlign="right">{"Ativo"}</Typography>
@@ -22,12 +22,12 @@ export default function CustomListItemTrainne(props) {
                     <Grid container direction="row" item xs={12}>
                         <Grid item xs={6}>
                             <Typography>
-                                {`Email: ${props.trainne?.Email}`}
+                                {`Encerra em: ${props.trainne?.encerramEm}`}
                             </Typography>
                         </Grid>
                         <Grid item xs={6}>
                             <Typography>
-                                {`Contato: ${props.trainne?.Telefone}`}
+                                {`Data de nascimento: ${props.trainne?.dataNasc}`}
                             </Typography>
                         </Grid>
                     </Grid>

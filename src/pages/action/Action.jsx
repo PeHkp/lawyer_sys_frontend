@@ -57,7 +57,6 @@ export default function Action() {
     const { errorMsg, actions, criaAcao, ...data } = state
 
     const handleChange = ({ target: { value, name } }) => {
-        console.log(value, name)
         dispatch({ type: 'update', data: { [name]: value } })
     }
 
@@ -70,7 +69,7 @@ export default function Action() {
                 doc: doc,
                 lawyerId: lawyerId,
                 customerId: customerId,
-                custo: custo
+                custo: parseFloat(custo)
             }
 
             ActionService
@@ -92,6 +91,7 @@ export default function Action() {
         ActionService
             .get()
             .then((response => {
+                console.log(response.data)
                 dispatch({ type: 'update', data: { actions: response.data.msg } })
             })).catch((e) => {
                 console.log(e)
@@ -100,7 +100,6 @@ export default function Action() {
         ActionService
             .getCustomer()
             .then((response) => {
-                console.log(response)
                 let customItem = []
                 response.data.msg.map((item) => {
                     customItem.push({
@@ -116,7 +115,7 @@ export default function Action() {
         ActionService
             .getLawyer()
             .then((response) => {
-                console.log(response)
+                
                 let customItem = []
                 response.data.msg.map((item) => {
                     customItem.push({

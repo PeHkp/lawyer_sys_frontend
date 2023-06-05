@@ -49,7 +49,7 @@ export default function CustomListItemAction(props) {
                     <Grid container direction="row" item xs={12}>
                         <Grid item xs={6}>
                             <Typography>
-                                {`Custom: ${props.custo}`}
+                                {`Custo: ${props.action.custo}`}
                             </Typography>
                         </Grid>
                     </Grid>

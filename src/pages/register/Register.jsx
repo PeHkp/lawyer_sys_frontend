@@ -150,7 +150,7 @@ export default function Register() {
                 }
             }).catch((e) => {
                 console.log(e)
-                dispatch({ type: 'update', data: { errorMsg: e.response.data?.msg } })
+                dispatch({ type: 'update', data: { errorMsg: e.response.data?.error?.message } })
             })
 
     }

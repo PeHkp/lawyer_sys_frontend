@@ -12,7 +12,7 @@ export default function CustomListItemBook(props) {
                     id="panel1a-header"
                 >
                     <Grid item xs={8}>
-                        <Typography>{props.book?.Nome}</Typography>
+                        <Typography>{props.book?.nome}</Typography>
                     </Grid>
                     <Grid item xs={4}>
                         <Typography textAlign="right">{"Ativo"}</Typography>
@@ -22,12 +22,12 @@ export default function CustomListItemBook(props) {
                     <Grid container direction="row" item xs={12}>
                         <Grid item xs={6}>
                             <Typography>
-                                {`Autor: ${props.book?.Autor}`}
+                                {`Autor: ${props.book?.autor}`}
                             </Typography>
                         </Grid>
                         <Grid item xs={6}>
                             <Typography>
-                                {`Publicado: ${props.book?.Publicado}`}
+                                {`Publicado: ${props.book?.data_pub}`}
                             </Typography>
                         </Grid>
                     </Grid>

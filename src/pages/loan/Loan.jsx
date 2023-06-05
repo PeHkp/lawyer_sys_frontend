@@ -64,6 +64,7 @@ export default function Loan() {
         LoanService
             .get()
             .then((response => {
+                console.log(response.data)
                 dispatch({ type: 'update', data: { loans: response.data.msg } })
             })).catch((e) => {
                 console.log(e)
@@ -72,12 +73,11 @@ export default function Loan() {
         LoanService
             .getBook()
             .then((response) => {
-                console.log(response)
                 let bookItem = []
                 response.data.msg.map((item) => {
                     bookItem.push({
                         id: Number(item.id),
-                        label: item.Nome
+                        label: item.nome
                     })
                 })
                 dispatch({ type: 'update', data: { books: bookItem } })
@@ -88,13 +88,11 @@ export default function Loan() {
         LoanService
             .getTrainner()
             .then((response) => {
-                console.log(response)
-                console.log(response.data)
                 let trainnerItem = []
-                response.data.msg.map((item) => {
+                response.data.map((item) => {
                     trainnerItem.push({
-                        id: Number(item.Id),
-                        label: item.NOme
+                        id: Number(item.id),
+                        label: item.nome
                     })
                 })
                 dispatch({ type: 'update', data: { trainners: trainnerItem } })
@@ -105,9 +103,9 @@ export default function Loan() {
 
     const handleRegister = () => {
         let obj = {
-            idLivro: idLivro,
-            idEstagiario: idEstagiario,
-            dataDevolucao: data_devolucao,
+            book_id: idLivro,
+            intern_id: idEstagiario,
+            data_dev: data_devolucao,
             situacao: situacao
         }
 

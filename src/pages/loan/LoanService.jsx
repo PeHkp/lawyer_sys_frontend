@@ -16,7 +16,7 @@ const get = (data) => Api.get(`/get/loan`, {
     }
 });
 
-const getTrainner = () => Api.get(`/get/trainne`, {
+const getTrainner = () => Api.get(`/get/intern`, {
     headers: {
         authorization: sessionStorage.getItem('token')
     }
