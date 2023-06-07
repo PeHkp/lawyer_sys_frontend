@@ -130,7 +130,9 @@ export default function Action() {
     }
 
     useEffect(() => {
+
         handleSearch();
+
     }, [])
 
     const handleChangeAutoComplete = (value, name) => {
