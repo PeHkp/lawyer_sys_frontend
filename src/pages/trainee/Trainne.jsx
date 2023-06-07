@@ -2,25 +2,19 @@ import { Box, Grid, TextField, Typography } from "@mui/material";
 import React, { useEffect, useReducer } from "react";
 import CustomListItem from "../../components/ListItem/CustomListItem";
 import DefaultButton from "../../components/Button/DefaultButton";
-import EmailIcon from '@mui/icons-material/Email';
 import { AccountCircle } from "@mui/icons-material";
 import PhoneIcon from '@mui/icons-material/Phone';
+import TrainnerService from "./TrainnerService";
+import CustomListItemTrainne from "../../components/ListItem/CustomListItemTrainne";
 
 
 const initialState = {
-    email: '',
+    encerraEm: '',
     nome: '',
-    telefone: '',
+    dataNasc: '',
     idEscritorio: 0,
     errorMsg: '',
-    trainners: [
-        { id: 1, nome: 'Teste', descricao: 'teste teste' },
-        { id: 2, nome: 'Teste2', descricao: 'teste teste' },
-        { id: 3, nome: 'Teste3', descricao: 'teste teste' },
-        { id: 4, nome: 'Teste4', descricao: 'teste teste' },
-        { id: 5, nome: 'Teste5', descricao: 'teste teste' },
-        { id: 6, nome: 'Teste6', descricao: 'teste teste' }
-    ],
+    trainners: [],
     criaEstagiario: false
 }
 
@@ -39,15 +33,48 @@ export default function Trainner() {
     const [state, dispatch] = useReducer(reducer, initialState);
 
     const {
-        email,
+        encerraEm,
         nome,
-        telefone,
+        dataNasc,
         idEscritorio
     } = state
     const { errorMsg, criaEstagiario, trainners, ...data } = state
 
     const handleChange = ({ target: { value, name } }) => {
         dispatch({ type: 'update', data: { [name]: value } })
+    }
+
+    useEffect(() => {
+        handleSearch()
+    }, [])
+
+    const handleSave = () => {
+        let obj = {
+            nome: nome,
+            encerraEm: encerraEm,
+            dataNasc: dataNasc
+        }
+
+        TrainnerService
+            .register(obj)
+            .then((response) => {
+                dispatch({ type: 'update', data: { criaEstagiario: false } })
+                dispatch({ type: 'clear' })
+                handleSearch()
+            }).catch((e) => {
+                console.log(e)
+            })
+    }
+
+    const handleSearch = () => {
+        TrainnerService
+            .get()
+            .then((response => {
+                console.log(response)
+                dispatch({ type: 'update', data: { trainners: response.data } })
+            })).catch((e) => {
+                console.log(e)
+            })
     }
 
     return (
@@ -58,12 +85,11 @@ export default function Trainner() {
                         <Typography variant="h6" textAlign="center">Estágiarios</Typography>
                     </Grid>
                     <Grid container justifyContent="center">
-                        {trainners.map((item) => {
+                        {trainners?.map((item) => {
                             return (
                                 <Grid item xs={10} key={item.id}>
-                                    <CustomListItem
-                                        nome={item.nome}
-                                        descricao={item.descricao}
+                                    <CustomListItemTrainne
+                                        trainne={item}
                                     />
                                 </Grid>
                             )
@@ -80,11 +106,11 @@ export default function Trainner() {
                             <Typography variant="h6" textAlign="center">Cadastro de Estágiario</Typography>
                         </Grid>
                         <Grid item xs={10} md={6}>
+                            <p>Nome</p>
                             <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
                                 <AccountCircle sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
                                 <TextField
                                     name="nome"
-                                    label="Nome"
                                     variant="standard"
                                     type="text"
                                     fullWidth
@@ -95,28 +121,27 @@ export default function Trainner() {
                         </Grid>
                         <Grid item xs={10} md={6}>
                             <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
-                                <EmailIcon sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
+                                <p>Data de encerramento</p>
                                 <TextField
-                                    name="email"
-                                    label="E-mail"
+                                    name="encerraEm"
                                     variant="standard"
-                                    type="email"
+                                    type="date"
                                     fullWidth
                                     onChange={handleChange}
-                                    value={email}
+                                    value={encerraEm}
                                 />
                             </Box>
                         </Grid>
                         <Grid item xs={10} md={6}>
                             <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
-                                <PhoneIcon sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
+                                <p>Data Nascimento</p>
                                 <TextField
-                                    name="telefone"
-                                    label="Telefone"
+                                    name="dataNasc"
+                                    type="date"
                                     variant="standard"
                                     fullWidth
                                     onChange={handleChange}
-                                    value={telefone}
+                                    value={dataNasc}
                                 />
                             </Box>
                         </Grid>
@@ -125,7 +150,7 @@ export default function Trainner() {
                                 <DefaultButton description="Cancelar" onClick={() => dispatch({ type: 'update', data: { criaEstagiario: false } })} />
                             </Grid>
                             <Grid item xs={3} style={{ marginTop: 20 }}>
-                                <DefaultButton description="Salvar" />
+                                <DefaultButton description="Salvar" onClick={handleSave} />
                             </Grid>
                         </Grid>
                     </Grid>

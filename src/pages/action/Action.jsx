@@ -24,7 +24,8 @@ const initialState = {
         { id: 1, label: 'Em Processo' },
         { id: 2, label: 'Finalizado' },
         { id: 3, label: 'Cancelado' },
-    ]
+    ],
+    custo: ''
 }
 
 function reducer(state, action) {
@@ -50,12 +51,12 @@ export default function Action() {
         customerId,
         customers,
         lawyers,
-        statusList
+        statusList,
+        custo
     } = state
     const { errorMsg, actions, criaAcao, ...data } = state
 
     const handleChange = ({ target: { value, name } }) => {
-        console.log(value, name)
         dispatch({ type: 'update', data: { [name]: value } })
     }
 
@@ -67,7 +68,8 @@ export default function Action() {
                 descricao: descricao,
                 doc: doc,
                 lawyerId: lawyerId,
-                customerId: customerId
+                customerId: customerId,
+                custo: parseFloat(custo)
             }
 
             ActionService
@@ -89,15 +91,15 @@ export default function Action() {
         ActionService
             .get()
             .then((response => {
+                console.log(response.data)
                 dispatch({ type: 'update', data: { actions: response.data.msg } })
             })).catch((e) => {
                 console.log(e)
             })
-        
+
         ActionService
             .getCustomer()
             .then((response) => {
-                console.log(response)
                 let customItem = []
                 response.data.msg.map((item) => {
                     customItem.push({
@@ -113,7 +115,7 @@ export default function Action() {
         ActionService
             .getLawyer()
             .then((response) => {
-                console.log(response)
+                
                 let customItem = []
                 response.data.msg.map((item) => {
                     customItem.push({
@@ -128,7 +130,9 @@ export default function Action() {
     }
 
     useEffect(() => {
-        handleSearch();        
+
+        handleSearch();
+
     }, [])
 
     const handleChangeAutoComplete = (value, name) => {
@@ -156,6 +160,7 @@ export default function Action() {
                                         customers={customers}
                                         lawyers={lawyers}
                                         statusList={statusList}
+                                        custo={custo}
                                     />
                                 </Grid>
                             )
@@ -222,6 +227,18 @@ export default function Action() {
                                     fullWidth
                                     onChange={handleChange}
                                     value={descricao}
+                                />
+                            </Box>
+                        </Grid>
+                        <Grid item xs={10} md={6}>
+                            <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+                                <TextField
+                                    name="custo"
+                                    label="Custo"
+                                    variant="standard"
+                                    fullWidth
+                                    onChange={handleChange}
+                                    value={custo}
                                 />
                             </Box>
                         </Grid>

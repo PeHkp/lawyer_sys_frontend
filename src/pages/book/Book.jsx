@@ -5,6 +5,8 @@ import DefaultButton from "../../components/Button/DefaultButton";
 import EmailIcon from '@mui/icons-material/Email';
 import { AccountCircle } from "@mui/icons-material";
 import PhoneIcon from '@mui/icons-material/Phone';
+import BookService from "./BookService";
+import CustomListItemBook from "../../components/ListItem/CustomListItemBook";
 
 const initialState = {
     id: 0,
@@ -15,12 +17,7 @@ const initialState = {
 
     errorMsg: '',
     books: [
-        { id: 1, nome: 'Teste', descricao: 'teste teste' },
-        { id: 2, nome: 'Teste2', descricao: 'teste teste' },
-        { id: 3, nome: 'Teste3', descricao: 'teste teste' },
-        { id: 4, nome: 'Teste4', descricao: 'teste teste' },
-        { id: 5, nome: 'Teste5', descricao: 'teste teste' },
-        { id: 6, nome: 'Teste6', descricao: 'teste teste' }
+    
     ],
     criaLivro: false
 }
@@ -52,6 +49,38 @@ export default function Book() {
         dispatch({ type: 'update', data: { [name]: value } })
     }
 
+    useEffect(()=>{
+        handleSearch()
+    },[])
+
+    const handleSave = () => {
+        let obj = {
+            nome: nome,
+            autor: autor,
+            pub: publicado
+        }
+
+        BookService
+            .register(obj)
+            .then((response) => {
+                dispatch({ type: 'update', data: { criaLivro: false } })
+                dispatch({ type: 'clear' })
+                handleSearch()
+            }).catch((e) => {
+                console.log(e)
+            })
+    }
+
+    const handleSearch = () => {
+        BookService
+            .get()
+            .then((response => {
+                dispatch({ type: 'update', data: { books: response.data.msg } })
+            })).catch((e) => {
+                console.log(e)
+            })
+    }
+
     return (
         <>
             {!criaLivro ? (
@@ -63,9 +92,8 @@ export default function Book() {
                         {books.map((item) => {
                             return (
                                 <Grid item xs={10} key={item.id}>
-                                    <CustomListItem
-                                        nome={item.nome}
-                                        descricao={item.descricao}
+                                    <CustomListItemBook
+                                        book={item}
                                     />
                                 </Grid>
                             )
@@ -131,7 +159,7 @@ export default function Book() {
                                 <DefaultButton description="Cancelar" onClick={() => dispatch({ type: 'update', data: { criaLivro: false } })} />
                             </Grid>
                             <Grid item xs={3} style={{ marginTop: 20 }}>
-                                <DefaultButton description="Salvar" />
+                                <DefaultButton description="Salvar" onClick={handleSave}/>
                             </Grid>
                         </Grid>
                     </Grid>
